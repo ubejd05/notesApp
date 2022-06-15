@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+#all-notes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 20px;
+}
+
+.card {
+  margin: 10px;
+}
+
+.form-container {
+  width: 100vw;
+  height: 93vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#signup-form {
+  border: 1px solid #bbbbbb;
+  padding: 10px;
+  width: 250px;
+  height: 300px;
+}
