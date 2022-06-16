@@ -20,13 +20,21 @@
   width: 100vw;
   height: 93vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-#signup-form {
+form#signup-form,
+form#login-form {
   border: 1px solid #bbbbbb;
   padding: 10px;
   width: 250px;
   height: 300px;
+}
+
+.modal-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }

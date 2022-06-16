@@ -21,12 +21,6 @@ const firebaseConfig = {
   appId: "1:182472416911:web:9f73d8a0c9a4b8d775dafa"
 };
 
-// selectors
-const allNotesDiv = document.querySelector('#all-notes');
-const logoutBtn = document.querySelector('.logout');
-const loginBtn = document.querySelector('.login');
-
-
 // init firebase app
 initializeApp(firebaseConfig);
 
@@ -41,6 +35,12 @@ const notesCol = collection(db, 'notes');
 const q = query(notesCol,  orderBy('createdAt', 'desc'));
 
 
+
+// selectors
+const allNotesDiv = document.querySelector('#all-notes');
+const logoutBtn = document.querySelector('.logout');
+const loginBtn = document.querySelector('.login');
+const registerBtn = document.querySelector('.register');
 
 let loggedIn = false;
 let userInfo = null;
@@ -118,24 +118,47 @@ function deleteNote() {
 // });
 
 
-// // sign users up
-// const signupForm = document.querySelector('.signup');
-// signupForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
+// registerBtn.addEventListener('click', renderSignUp)
+// function renderSignUp() {
+//   // sign users up
+//   const signupForm = document.querySelector("#signup-form");
+//   signupForm.addEventListener("submit", (e) => {
+//     e.preventDefault();
 
-//   const email = signupForm.email.value;
-//   const password = signupForm.password.value;
+//     const email = signupForm.email.value;
+//     const password = signupForm.password.value;
 
-//   createUserWithEmailAndPassword(auth, email, password)
-//     .then((cred) => {
-//       console.log('user created:', cred.user);
-//       signupForm.reset();
-//     })
-//     .catch((err) => {
-//       console.log(err.message)
-//     })
-// }) ""
+//     createUserWithEmailAndPassword(auth, email, password)
+//       .then((cred) => {
+//         console.log("user created:", cred.user);
+//         signupForm.reset();
+//       })
+//       .catch((err) => {
+//         console.log(err.message);
+//       });
+//   });
+// }
 
+
+// loginBtn.addEventListener('click', renderLogIn);
+// function renderLogIn() {
+//   const loginForm = document.querySelector("#login-form");
+//   loginForm.addEventListener("submit", (e) => {
+//     e.preventDefault();
+
+//     const email = loginForm.email.value;
+//     const password = loginForm.password.value;
+
+//     signInWithEmailAndPassword(auth, email, password)
+//       .then((cred) => {
+//         console.log("user signed in:", cred.user);
+//         loginForm.reset();
+//       })
+//       .catch((err) => {
+//         console.log(err.message);
+//       });
+//   });
+// }
 
 // // logging in and out
 const logoutButton = document.querySelector('.logout');
@@ -149,22 +172,6 @@ logoutButton.addEventListener('click', () => {
     })
 })
 
-// const loginForm = document.querySelector('.login');
-// loginForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
-
-//   const email = loginForm.email.value;
-//   const password = loginForm.password.value;
-
-//   signInWithEmailAndPassword(auth, email, password)
-//     .then((cred) => {
-//       console.log('user signed in:', cred.user);
-//       loginForm.reset();
-//     })
-//     .catch((err) => {
-//       console.log(err.message);
-//     })
-// })
 
 
 
