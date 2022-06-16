@@ -43,7 +43,7 @@ const loginBtn = document.querySelector('.login');
 const registerBtn = document.querySelector('.register');
 
 let loggedIn = false;
-let userInfo = null;
+let userInfo;
 console.log('current user', userInfo);
 
 onSnapshot(notesCol, (snapshot) => {
@@ -96,26 +96,25 @@ function deleteNote() {
 //   logoutBtn.style.display = 'none';
 //   loginBtn.style.display = 'block';
 // }
- 
 
 // // add new note
-// const addNoteForm = document.querySelector('.addNote');
-// addNoteForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
-//   if(!loggedIn) {
-//     alert('Please log in first');
-//   } else {
-//     addDoc(notesCol, {
-//       title: addNoteForm.title.value, 
-//       body: addNoteForm.body.value,
-//       user: userInfo.uid,
-//       createdAt: serverTimestamp(),
-//     }).then(() => {
-//         addNoteForm.reset();
-//       })
-//       .catch(err => console.log(err.message));
-//   }
-// });
+const addNoteForm = document.querySelector('#new-note-form');
+addNoteForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if(!loggedIn) {
+    alert('Please log in first');
+  } else {
+    addDoc(notesCol, {
+      title: addNoteForm.title.value, 
+      body: addNoteForm.body.value,
+      user: userInfo.uid,
+      createdAt: serverTimestamp(),
+    }).then(() => {
+        addNoteForm.reset();
+      })
+      .catch(err => console.log(err.message));
+  }
+});
 
 
 // registerBtn.addEventListener('click', renderSignUp)
@@ -184,6 +183,7 @@ onAuthStateChanged(auth, (user) => {
     loginBtn.style.display = 'none';
     loggedIn = true;
     userInfo = user;
+    console.log('current user', userInfo.uid);
   } else {
     logoutBtn.style.display = 'none';
     loginBtn.style.display = 'block';

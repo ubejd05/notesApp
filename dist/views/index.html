@@ -39,6 +39,39 @@
 
   <div id="all-notes"></div>
 
+
+
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary modal-button" data-bs-toggle="modal" data-bs-target="#new-note-modal">
+  Add New Note
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="new-note-modal" tabindex="-1" aria-labelledby="new-note-modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-5">
+      <h1>Add New Note</h1>
+      <form id="new-note-form">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" class="form-control" name="title" placeholder="Title" required>
+        </div>
+        <div class="form-group">
+          <label for="body">Body</label>
+          <textarea id="body" class="form-control" name="body" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Add Note</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+  
+
+  
+  <form id="signup-form" style="display: none;"></form>
+  <form id="login-form" style="display: none;"></form>
+
   <script src="../bundle.js"></script>
 </body>
 </html>
