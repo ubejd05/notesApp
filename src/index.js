@@ -46,7 +46,7 @@ let loggedIn = false;
 let userInfo;
 console.log('current user', userInfo);
 
-onSnapshot(notesCol, (snapshot) => {
+onSnapshot(q, (snapshot) => {
   allNotesDiv.innerHTML = ''
   let docData = [];
   snapshot.docs.forEach(doc => {
@@ -54,22 +54,27 @@ onSnapshot(notesCol, (snapshot) => {
       'id': doc.id,
       'title': doc.data().title,
       'body': doc.data().body,
+      'user':  doc.data().user,
+      'createdAt': doc.data().createdAt,
     });
   });
   console.log('docData', docData)
 
   docData.forEach((doc) => {
-    console.log('doc Id', doc.id)
+    if (userInfo.uid && userInfo.uid == doc.user) {
+      console.log('doc id', doc.user);
+      console.log('userInfo.uid', userInfo.uid);
+      allNotesDiv.innerHTML += `
+        <div class="card" style="width: 18rem;" data-id="${doc.id.trim()}">
+          <div class="card-body">
+            <h5 class="card-title">${doc.title}</h5>
+            <p class="card-text">${doc.body}</p>
+            <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
+          </div>
+        </div>
+      `;
+    }
     
-    allNotesDiv.innerHTML += `
-    <div class="card" style="width: 18rem;" data-id="${doc.id.trim()}">
-      <div class="card-body">
-        <h5 class="card-title">${doc.title}</h5>
-        <p class="card-text">${doc.body}</p>
-        <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
-      </div>
-    </div>
-    `;
   })
 
   deleteNote()
@@ -88,14 +93,6 @@ function deleteNote() {
     });
   })
 }
-
-// if (loggedIn) {
-//   logoutBtn.style.display = 'block';
-//   loginBtn.style.display = 'none';
-// } else {
-//   logoutBtn.style.display = 'none';
-//   loginBtn.style.display = 'block';
-// }
 
 // // add new note
 const addNoteForm = document.querySelector('#new-note-form');
@@ -117,53 +114,12 @@ addNoteForm.addEventListener('submit', (e) => {
 });
 
 
-// registerBtn.addEventListener('click', renderSignUp)
-// function renderSignUp() {
-//   // sign users up
-//   const signupForm = document.querySelector("#signup-form");
-//   signupForm.addEventListener("submit", (e) => {
-//     e.preventDefault();
-
-//     const email = signupForm.email.value;
-//     const password = signupForm.password.value;
-
-//     createUserWithEmailAndPassword(auth, email, password)
-//       .then((cred) => {
-//         console.log("user created:", cred.user);
-//         signupForm.reset();
-//       })
-//       .catch((err) => {
-//         console.log(err.message);
-//       });
-//   });
-// }
-
-
-// loginBtn.addEventListener('click', renderLogIn);
-// function renderLogIn() {
-//   const loginForm = document.querySelector("#login-form");
-//   loginForm.addEventListener("submit", (e) => {
-//     e.preventDefault();
-
-//     const email = loginForm.email.value;
-//     const password = loginForm.password.value;
-
-//     signInWithEmailAndPassword(auth, email, password)
-//       .then((cred) => {
-//         console.log("user signed in:", cred.user);
-//         loginForm.reset();
-//       })
-//       .catch((err) => {
-//         console.log(err.message);
-//       });
-//   });
-// }
-
 // // logging in and out
 const logoutButton = document.querySelector('.logout');
 logoutButton.addEventListener('click', () => {
   signOut(auth)
     .then(() => {
+      allNotesDiv.innerHTML = '';
       console.log('the user signed out');
     })
     .catch((err) => {
