@@ -7,11 +7,30 @@
   <!-- -install firebase -->
   <!-- -install webpack -->
 
-# integrate Firebase Auth
+<!-- # integrate Firebase Auth
   -sign up form
   -log in form 
-  -log out button
+  -log out button -->
 
-# Notes
-- new note form
+<!-- # Notes
+- new note form -->
 
+# add auth for index page
+  -- login first before adding note
+  -- hide add note button if not logged in
+  -- show login first error
+  -- redirect to login page
+
+
+# notes crud functionallity
+  -- fix modal 
+    - new note modal open from js 
+  -- edit functionallity
+  -- delete functionallity
+  -- single note view
+
+# fix UI
+  -- add bootstrap grid
+  -- user acc img
+  -- style fixes
+  

@@ -20,12 +20,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" href="index.html">Notes</a>
-          <a class="nav-link" href="/create">New Note</a>
-        </div>
         <div class="navbar-nav ms-auto">
-
           <a class="nav-link login" href="login.html">Login</a>
           <a class="nav-link register" href="signup.html">Register</a>
           <a class="nav-link logout" href="#">Logout</a>
@@ -42,31 +37,9 @@
 
 
   <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary modal-button" data-bs-toggle="modal" data-bs-target="#new-note-modal">
+<button type="button" class="btn btn-primary modal-button">
   Add New Note
 </button>
-
-<!-- Modal -->
-<div class="modal fade" id="new-note-modal" tabindex="-1" aria-labelledby="new-note-modal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-5">
-      <h1>Add New Note</h1>
-      <form id="new-note-form">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input type="text" id="title" class="form-control" name="title" placeholder="Title" required>
-        </div>
-        <div class="form-group">
-          <label for="body">Body</label>
-          <textarea id="body" class="form-control" name="body" rows="3" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Add Note</button>
-      </form>
-    </div>
-  </div>
-</div>
-
-  
 
   
   <form id="signup-form" style="display: none;"></form>
