@@ -33,4 +33,8 @@
   -- add bootstrap grid
   -- user acc img
   -- style fixes
-  
+
+# code refactor
+  -- remove console.logs
+  -- separate new note and edit note form into two forms
+

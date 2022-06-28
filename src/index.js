@@ -1,24 +1,13 @@
 import { initializeApp } from "firebase/app";
 import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  addDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  orderBy,
-  serverTimestamp,
-  getDoc,
-  updateDoc,
-  getDocs,
+  getFirestore, collection, onSnapshot, 
+  addDoc, deleteDoc, doc, query, 
+  where, orderBy, serverTimestamp,
+  getDoc, updateDoc, getDocs,
 } from "firebase/firestore";
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signOut,
-  signInWithEmailAndPassword,
+  getAuth, createUserWithEmailAndPassword,
+  signOut, signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
 
@@ -49,6 +38,7 @@ const allNotesDiv = document.querySelector("#all-notes");
 const logoutBtn = document.querySelector(".logout");
 const loginBtn = document.querySelector(".login");
 const registerBtn = document.querySelector(".register");
+const modalBtn = document.querySelector(".modal-button");
 
 let loggedIn = false;
 let userInfo;
@@ -78,7 +68,7 @@ onSnapshot(q, (snapshot) => {
             <h5 class="card-title">${doc.title}</h5>
             <p class="card-text">${doc.body}</p>
             <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
-            <a href="#" class="btn btn-warning update-btn">Edit Note</a>
+            <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
           </div>
         </div>
       `;
@@ -86,12 +76,15 @@ onSnapshot(q, (snapshot) => {
   });
 
   deleteNote();
-});
+  editNoteModal();
+})
+
+
 
 // delete note
 function deleteNote() {
   const deleteBtns = document.querySelectorAll(".delete-btn");
-  console.log("deleteBtns", deleteBtns);
+
   deleteBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -129,6 +122,46 @@ function addNote() {
 }
 
 
+// edit note
+function editNote(noteId) {
+  const editNoteForm = document.querySelector('#edit-note-form');
+  editNoteForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const docRef = doc(db, 'notes', noteId);
+
+    updateDoc(docRef, {
+      title: editNoteForm.title.value,
+      body: editNoteForm.body.value
+    })
+  })
+}
+
+
+// open edit modal and populate data
+function editNoteModal() {
+  const editBtns = document.querySelectorAll('.edit-btn');  
+
+  editBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const noteId = e.target.parentElement.parentElement.dataset.id;
+
+      let title;
+      let body;
+      let id;
+
+      const docRef = doc(db, 'notes', noteId)
+      getDoc(docRef)
+        .then((doc) => {
+          id = doc.id;
+          title = doc.data().title;
+          body = doc.data().body;
+          showModal('edit', id, title, body)
+        })
+    })
+  })
+}
+
 // logging out
 const logoutButton = document.querySelector(".logout");
 logoutButton.addEventListener("click", () => {
@@ -145,13 +178,11 @@ logoutButton.addEventListener("click", () => {
 // subscribing to auth changes
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log("user signed in:", user);
     logoutBtn.style.display = "block";
     loginBtn.style.display = "none";
     registerBtn.style.display = "none";
     loggedIn = true;
     userInfo = user;
-    console.log("current user", userInfo.uid);
   } else {
     logoutBtn.style.display = "none";
     loginBtn.style.display = "block";
@@ -162,40 +193,44 @@ onAuthStateChanged(auth, (user) => {
 });
 
 let modalWrap = null;
-const showModal = () => {
+function showModal(mode, id, title, body) {
   if (modalWrap !== null) {
     modalWrap.remove();
   }
 
   modalWrap = document.createElement("div");
   modalWrap.innerHTML = `
-   <div class="modal fade" id="new-note-modal" tabindex="-1" aria-labelledby="new-note-modal" aria-hidden="true">
+    <div class="modal fade" id="${mode === 'edit' ? 'edit-note-modal' : 'new-note-modal'}" tabindex="-1" aria-labelledby="${mode === 'edit' ? 'edit-note-modal' : 'new-note-modal'}" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content p-5">
-         <h1>Add New Note</h1>
-         <form id="new-note-form">
+        <div class="modal-content p-5">
+          <h1>${mode === 'edit' ? 'Edit Note' : 'Add New Note'}</h1>
+          <form id="${mode === 'edit' ? 'edit-note-form' : 'new-note-form'}">
             <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" id="title" class="form-control" name="title" placeholder="Title" required>
+              <label for="title">Title</label>
+              <input type="text" id="title" class="form-control" name="title" placeholder="Title" required value="${mode === 'edit' ? title : ''}">
             </div>
             <div class="form-group">
-            <label for="body">Body</label>
-            <textarea id="body" class="form-control" name="body" rows="3" required></textarea>
+              <label for="body">Body</label>
+              <textarea id="body" class="form-control" name="body" rows="3" required>${mode === 'edit' ? body : ''}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Add Note</button>
-         </form>
+            <button type="submit" class="${mode === 'edit' ? "btn btn-warning mt-3" : "btn btn-primary mt-3"}">${mode === 'edit' ? 'Edit' : 'Add Note'}</button>
+          </form>
+        </div>
       </div>
-      </div>
-   </div>
-   `;
+    </div>
+  `;
 
   document.body.append(modalWrap);
 
   let modal = new bootstrap.Modal(modalWrap.querySelector(".modal"));
   modal.show();
 
-  addNote();
+  if (mode === 'edit') {
+    editNote(id); 
+  } else {
+    addNote();
+  }
 };
 
-const modalBtn = document.querySelector(".modal-button");
+
 modalBtn.addEventListener("click", showModal);
