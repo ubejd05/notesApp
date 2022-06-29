@@ -30,8 +30,6 @@ const auth = getAuth();
 // collection refs
 const notesCol = collection(db, "notes");
 
-// queries
-const q = query(notesCol, orderBy("createdAt", "desc"));
 
 // selectors
 const allNotesDiv = document.querySelector("#all-notes");
@@ -44,24 +42,27 @@ let loggedIn = false;
 let userInfo;
 console.log("current user", userInfo);
 
-onSnapshot(q, (snapshot) => {
-  allNotesDiv.innerHTML = "";
-  let docData = [];
-  snapshot.docs.forEach((doc) => {
-    docData.push({
-      id: doc.id,
-      title: doc.data().title,
-      body: doc.data().body,
-      user: doc.data().user,
-      createdAt: doc.data().createdAt,
-    });
-  });
-  console.log("docData", docData);
 
-  docData.forEach((doc) => {
-    if (userInfo && userInfo.uid == doc.user) {
+function loadNotes() {
+  const q = query(notesCol, where("user", "==", userInfo.uid), orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    allNotesDiv.innerHTML = "";
+    let docData = [];
+    snapshot.docs.forEach((doc) => {
+      docData.push({
+        id: doc.id,
+        title: doc.data().title,
+        body: doc.data().body,
+        user: doc.data().user,
+        createdAt: doc.data().createdAt,
+      });
+    });
+    console.log("docData", docData);
+  
+    docData.forEach((doc) => {
       console.log("doc id", doc.user);
       console.log("userInfo.uid", userInfo.uid);
+      console.log("current user", userInfo);
       allNotesDiv.innerHTML += `
         <div class="card" style="width: 18rem;" data-id="${doc.id.trim()}">
           <div class="card-body">
@@ -72,12 +73,12 @@ onSnapshot(q, (snapshot) => {
           </div>
         </div>
       `;
-    }
-  });
-
-  deleteNote();
-  editNoteModal();
-})
+    });
+  
+    deleteNote();
+    editNoteModal();
+  })
+}
 
 
 
@@ -118,6 +119,8 @@ function addNote() {
         })
         .catch((err) => console.log(err.message));
     }
+
+    closeModal()
   });
 }
 
@@ -134,6 +137,8 @@ function editNote(noteId) {
       title: editNoteForm.title.value,
       body: editNoteForm.body.value
     })
+
+    closeModal()
   })
 }
 
@@ -216,17 +221,20 @@ signupForm.addEventListener('submit', (e) => {
 // subscribing to auth changes
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    loggedIn = true;
+    userInfo = user;
     logoutBtn.style.display = "block";
     loginBtn.style.display = "none";
     registerBtn.style.display = "none";
-    loggedIn = true;
-    userInfo = user;
+    modalBtn.style.display = "block";
+    loadNotes();
   } else {
+    loggedIn = false;
+    userInfo = {};
     logoutBtn.style.display = "none";
     loginBtn.style.display = "block";
     registerBtn.style.display = "block";
-    loggedIn = false;
-    userInfo = {};
+    modalBtn.style.display = "none";
   }
 });
 
@@ -272,3 +280,15 @@ function showModal(mode, id, title, body) {
 
 
 modalBtn.addEventListener("click", showModal);
+
+
+function closeModal() {
+  const modal = document.querySelector(".modal");
+  const modalBackdropt = document.querySelector('.modal-backdrop')
+  
+  modal.classList.remove('show')
+  modal.classList.add('hide')
+  
+  modalBackdropt.classList.remove('show')
+  modalBackdropt.classList.add('hide')
+}

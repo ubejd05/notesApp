@@ -23,11 +23,11 @@
 
 
 # notes crud functionallity
-  -- fix modal 
-    - new note modal open from js 
-  -- edit functionallity
-  -- delete functionallity
-  -- single note view
+  <!-- -- fix modal 
+    - new note modal open from js  -->
+  <!-- -- edit functionallity -->
+  <!-- -- delete functionallity -->
+  <!-- -- single note view -->
 
 # fix UI
   -- add bootstrap grid
