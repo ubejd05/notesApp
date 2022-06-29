@@ -175,6 +175,44 @@ logoutButton.addEventListener("click", () => {
     });
 });
 
+// log users in
+const loginForm = document.querySelector('#login-form');
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const email = loginForm.email.value;
+  const password = loginForm.password.value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log('user signed in:', cred.user);
+      loginForm.reset();
+      window.location.href = "index.html";
+    })
+    .catch((err) => {
+      console.log(err.message);
+    })
+})
+
+// sign users up
+const signupForm = document.querySelector('#signup-form');
+signupForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const email = signupForm.email.value;
+  const password = signupForm.password.value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log('user created:', cred.user);
+      signupForm.reset();
+      window.location.href = "index.html";
+    })
+    .catch((err) => {
+      console.log(err.message)
+    })
+});
+
 // subscribing to auth changes
 onAuthStateChanged(auth, (user) => {
   if (user) {
