@@ -37,6 +37,7 @@ const logoutBtn = document.querySelector(".logout");
 const loginBtn = document.querySelector(".login");
 const registerBtn = document.querySelector(".register");
 const modalBtn = document.querySelector(".modal-button");
+const backBtn =  document.querySelector('.back-btn');
 
 let loggedIn = false;
 let userInfo;
@@ -44,6 +45,8 @@ console.log("current user", userInfo);
 
 
 function loadNotes() {
+  modalBtn.style.display = 'block';
+  backBtn.style.display = 'none';
   const q = query(notesCol, where("user", "==", userInfo.uid), orderBy("createdAt", "desc"));
   onSnapshot(q, (snapshot) => {
     allNotesDiv.innerHTML = "";
@@ -64,10 +67,10 @@ function loadNotes() {
       console.log("userInfo.uid", userInfo.uid);
       console.log("current user", userInfo);
       allNotesDiv.innerHTML += `
-        <div class="card" style="width: 18rem;" data-id="${doc.id.trim()}">
+        <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
           <div class="card-body">
             <h5 class="card-title">${doc.title}</h5>
-            <p class="card-text">${doc.body}</p>
+            <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '...' : doc.body}</p>
             <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
             <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
           </div>
@@ -77,6 +80,7 @@ function loadNotes() {
   
     deleteNote();
     editNoteModal();
+    singleNoteData();
   })
 }
 
@@ -149,6 +153,7 @@ function editNoteModal() {
 
   editBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const noteId = e.target.parentElement.parentElement.dataset.id;
 
       let title;
@@ -166,6 +171,43 @@ function editNoteModal() {
     })
   })
 }
+
+// single note
+function singleNoteData() {
+  const notes = document.querySelectorAll('.note');
+  notes.forEach((note) => {
+    note.addEventListener('click', (e) => {
+      const noteId = note.dataset.id;
+
+      const docRef = doc(db, 'notes', noteId)
+      getDoc(docRef)
+        .then((doc) => {
+          let title = doc.data().title;
+          let body = doc.data().body;
+          singleNoteView(title, body)
+        })
+    })
+  })
+  
+}
+
+// single note view
+function singleNoteView(title, body) {
+  allNotesDiv.innerHTML = `
+  <div class="card note" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">${title}</h5>
+      <p class="card-text">${body}</p>
+      <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
+      <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
+    </div>
+  </div>
+  `; 
+
+  modalBtn.style.display = 'none';
+  backBtn.style.display = 'block';
+}
+
 
 // logging out
 const logoutButton = document.querySelector(".logout");

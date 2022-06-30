@@ -12,8 +12,13 @@
   grid-gap: 20px;
 }
 
-.card {
+.note {
   margin: 10px;
+  cursor: pointer;
+}
+
+.note:active {
+  transform: scale(0.99);
 }
 
 .form-container {
@@ -34,7 +39,15 @@ form#login-form {
 }
 
 .modal-button {
-  position: absolute;
+  position: fixed;
   bottom: 50px;
   right: 50px;
+}
+
+.back-btn {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  text-decoration: none;
+  color: black;
 }

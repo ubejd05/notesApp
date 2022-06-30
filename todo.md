@@ -27,12 +27,12 @@
     - new note modal open from js  -->
   <!-- -- edit functionallity -->
   <!-- -- delete functionallity -->
-  <!-- -- single note view -->
+  -- single note view
 
 # fix UI
   -- add bootstrap grid
-  -- user acc img
   -- style fixes
+  -- user acc img
 
 # code refactor
   -- remove console.logs
