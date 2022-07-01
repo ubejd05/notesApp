@@ -49,6 +49,7 @@ function loadNotes() {
   backBtn.style.display = 'none';
   const q = query(notesCol, where("user", "==", userInfo.uid), orderBy("createdAt", "desc"));
   onSnapshot(q, (snapshot) => {
+  allNotesDiv.classList.remove('single-note-view')
     allNotesDiv.innerHTML = "";
     let docData = [];
     snapshot.docs.forEach((doc) => {
@@ -87,18 +88,22 @@ function loadNotes() {
 
 
 // delete note
-function deleteNote() {
+function deleteNote(mode) {
   const deleteBtns = document.querySelectorAll(".delete-btn");
 
   deleteBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      const docRef = doc(
-        db,
-        "notes",
-        e.target.parentElement.parentElement.dataset.id
-      );
 
+      let noteId;
+
+      if (mode === 'singlenote') {
+        noteId = e.target.parentElement.dataset.id;
+      } else {
+        noteId = e.target.parentElement.parentElement.dataset.id;
+      }
+      
+      const docRef = doc(db, "notes", noteId);
       deleteDoc(docRef);
     });
   });
@@ -148,13 +153,19 @@ function editNote(noteId) {
 
 
 // open edit modal and populate data
-function editNoteModal() {
+function editNoteModal(mode) {
   const editBtns = document.querySelectorAll('.edit-btn');  
 
   editBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const noteId = e.target.parentElement.parentElement.dataset.id;
+      let noteId;
+
+      if (mode === 'singlenote') {
+        noteId = e.target.parentElement.dataset.id;
+      } else {
+        noteId = e.target.parentElement.parentElement.dataset.id;
+      }
 
       let title;
       let body;
@@ -194,22 +205,21 @@ function singleNoteData() {
 
 // single note view
 function singleNoteView(id, title, body) {
+  allNotesDiv.classList.add('single-note-view')
   allNotesDiv.innerHTML = `
-  <div class="card note" style="width: 18rem;" data-id="${id.trim()}">
-    <div class="card-body">
+  <div class="single-note" style="width: 18rem;" data-id="${id.trim()}">
       <h5 class="card-title">${title}</h5>
       <p class="card-text">${body}</p>
       <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
       <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
-    </div>
   </div>
   `; 
 
   modalBtn.style.display = 'none';
   backBtn.style.display = 'block';
 
-  deleteNote();
-  editNoteModal();
+  deleteNote('singlenote');
+  editNoteModal('singlenote');
 }
 
 
