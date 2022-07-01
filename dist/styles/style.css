@@ -51,3 +51,7 @@ form#login-form {
   text-decoration: none;
   color: black;
 }
+
+.dots {
+  font-size: 25px;
+}

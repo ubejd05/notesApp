@@ -29,6 +29,10 @@
   <!-- -- delete functionallity -->
   -- single note view
 
+# auth
+  - login/signup with google
+  - password reset
+
 # fix UI
   -- add bootstrap grid
   -- style fixes

@@ -70,7 +70,7 @@ function loadNotes() {
         <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
           <div class="card-body">
             <h5 class="card-title">${doc.title}</h5>
-            <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '...' : doc.body}</p>
+            <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '<span class="dots">...<span>' : doc.body}</p>
             <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
             <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
           </div>
@@ -182,9 +182,10 @@ function singleNoteData() {
       const docRef = doc(db, 'notes', noteId)
       getDoc(docRef)
         .then((doc) => {
+          let id = doc.id;
           let title = doc.data().title;
           let body = doc.data().body;
-          singleNoteView(title, body)
+          singleNoteView(id, title, body)
         })
     })
   })
@@ -192,9 +193,9 @@ function singleNoteData() {
 }
 
 // single note view
-function singleNoteView(title, body) {
+function singleNoteView(id, title, body) {
   allNotesDiv.innerHTML = `
-  <div class="card note" style="width: 18rem;">
+  <div class="card note" style="width: 18rem;" data-id="${id.trim()}">
     <div class="card-body">
       <h5 class="card-title">${title}</h5>
       <p class="card-text">${body}</p>
@@ -206,6 +207,9 @@ function singleNoteView(title, body) {
 
   modalBtn.style.display = 'none';
   backBtn.style.display = 'block';
+
+  deleteNote();
+  editNoteModal();
 }
 
 
