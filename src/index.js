@@ -41,48 +41,73 @@ const backBtn =  document.querySelector('.back-btn');
 
 let loggedIn = false;
 let userInfo;
-console.log("current user", userInfo);
+
+let mode = 'all-notes';
+let singleNoteId;
 
 
 function loadNotes() {
+ const q = query(notesCol, where("user", "==", userInfo.uid), orderBy("createdAt", "desc")); 
+
+  onSnapshot(q, (snapshot) => {
+    allNotesDiv.innerHTML = "";
+    if (mode === 'all-notes') {
+      allNotesDiv.classList.remove('single-note-view')
+      loadAllNotes(snapshot)
+    } else {
+      const docRef = doc(db, 'notes', singleNoteId)
+      getDoc(docRef)
+        .then((doc) => {
+          let id = doc.id;
+          let title = doc.data().title;
+          let body = doc.data().body;
+          singleNoteView(id, title, body)
+        })
+    }
+    
+  
+    loadEventListeners()
+  })
+}
+
+
+function loadAllNotes(snapshot) {
   modalBtn.style.display = 'block';
   backBtn.style.display = 'none';
-  const q = query(notesCol, where("user", "==", userInfo.uid), orderBy("createdAt", "desc"));
-  onSnapshot(q, (snapshot) => {
-  allNotesDiv.classList.remove('single-note-view')
-    allNotesDiv.innerHTML = "";
-    let docData = [];
-    snapshot.docs.forEach((doc) => {
-      docData.push({
-        id: doc.id,
-        title: doc.data().title,
-        body: doc.data().body,
-        user: doc.data().user,
-        createdAt: doc.data().createdAt,
-      });
+
+  let docData = [];
+  snapshot.docs.forEach((doc) => {
+    docData.push({
+      id: doc.id,
+      title: doc.data().title,
+      body: doc.data().body,
+      user: doc.data().user,
+      createdAt: doc.data().createdAt,
     });
-    console.log("docData", docData);
-  
-    docData.forEach((doc) => {
-      console.log("doc id", doc.user);
-      console.log("userInfo.uid", userInfo.uid);
-      console.log("current user", userInfo);
-      allNotesDiv.innerHTML += `
-        <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
-          <div class="card-body">
-            <h5 class="card-title">${doc.title}</h5>
-            <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '<span class="dots">...<span>' : doc.body}</p>
-            <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
-            <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
-          </div>
+  });
+
+  docData.forEach((doc) => {
+    console.log("doc id", doc.user);
+    console.log("userInfo.uid", userInfo.uid);
+    console.log("current user", userInfo);
+    allNotesDiv.innerHTML += `
+      <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
+        <div class="card-body">
+          <h5 class="card-title">${doc.title}</h5>
+          <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '<span class="dots">...<span>' : doc.body}</p>
+          <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
+          <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
         </div>
-      `;
-    });
-  
-    deleteNote();
-    editNoteModal();
-    singleNoteData();
-  })
+      </div>
+    `;
+  });
+}
+
+
+function loadEventListeners() {
+  deleteNote();
+  editNoteModal();
+  singleNoteData();
 }
 
 
@@ -105,6 +130,7 @@ function deleteNote(mode) {
       
       const docRef = doc(db, "notes", noteId);
       deleteDoc(docRef);
+      allNotesMode();
     });
   });
 }
@@ -188,6 +214,9 @@ function singleNoteData() {
   const notes = document.querySelectorAll('.note');
   notes.forEach((note) => {
     note.addEventListener('click', (e) => {
+      mode = 'single-note';
+      singleNoteId = note.dataset.id;
+
       const noteId = note.dataset.id;
 
       const docRef = doc(db, 'notes', noteId)
@@ -334,8 +363,14 @@ function showModal(mode, id, title, body) {
   }
 };
 
+function allNotesMode() {
+  mode = 'all-notes';
+  singleNoteId = '';
+}
+
 
 modalBtn.addEventListener("click", showModal);
+backBtn.addEventListener('click', allNotesMode);
 
 
 function closeModal() {
