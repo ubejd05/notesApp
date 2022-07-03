@@ -87,9 +87,6 @@ function loadAllNotes(snapshot) {
   });
 
   docData.forEach((doc) => {
-    console.log("doc id", doc.user);
-    console.log("userInfo.uid", userInfo.uid);
-    console.log("current user", userInfo);
     allNotesDiv.innerHTML += `
       <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
         <div class="card-body">
@@ -119,6 +116,7 @@ function deleteNote(mode) {
   deleteBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
+      e.stopPropagation();
 
       let noteId;
 
@@ -375,11 +373,13 @@ backBtn.addEventListener('click', allNotesMode);
 
 function closeModal() {
   const modal = document.querySelector(".modal");
-  const modalBackdropt = document.querySelector('.modal-backdrop')
+  const modalBackdrop = document.querySelector('.modal-backdrop')
   
   modal.classList.remove('show')
   modal.classList.add('hide')
+  modal.style.display = 'none';
   
-  modalBackdropt.classList.remove('show')
-  modalBackdropt.classList.add('hide')
+  modalBackdrop.classList.remove('show')
+  modalBackdrop.classList.add('hide')
+  modalBackdrop.remove();
 }
