@@ -86,20 +86,24 @@ function loadAllNotes(snapshot) {
     });
   });
 
-  docData.forEach((doc) => {
-    allNotesDiv.innerHTML += `
-      <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
-        <div class="card-body">
-          <h5 class="card-title">${doc.title}</h5>
-          <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '<span class="dots">...<span>' : doc.body}</p>
-          <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
-          <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
+  if (docData.length < 1) {
+    noNotes()
+  } else {
+    docData.forEach((doc) => {
+      allNotesDiv.innerHTML += `
+        <div class="card note" style="width: 18rem;" data-id="${doc.id.trim()}">
+          <div class="card-body">
+            <h5 class="card-title">${doc.title}</h5>
+            <p class="card-text">${doc.body.length > 70 ? doc.body.slice(0, 70).trim() + '<span class="dots">...<span>' : doc.body}</p>
+            <a href="#" class="btn btn-danger delete-btn">Delete Note</a>
+            <a href="#" class="btn btn-warning edit-btn">Edit Note</a>
+          </div>
         </div>
-      </div>
-    `;
-  });
+      `;
+    });
+  }
+  
 }
-
 
 function loadEventListeners() {
   deleteNote();
@@ -108,6 +112,14 @@ function loadEventListeners() {
 }
 
 
+function noNotes() {
+  allNotesDiv.innerHTML = `
+    <img src="../illustration.svg" />
+    <h2 style="color: #536DFE;">No notes found!</h2>
+  `;
+  allNotesDiv.classList.add('single-note-view')
+  allNotesDiv.querySelector('img').style.width = '25rem'
+}
 
 // delete note
 function deleteNote(mode) {
